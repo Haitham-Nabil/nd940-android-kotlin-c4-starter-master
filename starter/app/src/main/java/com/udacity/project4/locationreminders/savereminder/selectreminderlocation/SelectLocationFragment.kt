@@ -69,7 +69,9 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapViewFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
+        binding.saveLocationBtn.setOnClickListener{
+            _viewModel.navigationCommand.value = NavigationCommand.Back
+        }
 //        TODO: call this function after the user confirms on the selected location
         //onLocationSelected()
         return binding.root
@@ -85,7 +87,7 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
         _viewModel.longitude.value = pointOfInterest.latLng.longitude
         _viewModel.reminderSelectedLocationStr.value = (pointOfInterest.name)
 
-        _viewModel.navigationCommand.value = NavigationCommand.Back
+        //_viewModel.navigationCommand.value = NavigationCommand.Back
     }
 
 
@@ -121,27 +123,12 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
         setMapLongClick(map)
         setPoiClick(map)
         setMapStyle(map)
-        enableMyLocation()
-
+        //enableMyLocation()
+        getUserLocation()
     }
 
 
     private fun setMapLongClick(map: GoogleMap){
-        /*map.setOnMapLongClickListener { latLng ->
-            // A Snippet is Additional text that's displayed below the title.
-            val snippet = String.format(
-                Locale.getDefault(),
-                "Lat: %1$.5f, Long: %2$.5f",
-                latLng.latitude,
-                latLng.longitude
-            )
-            map.addMarker(
-                MarkerOptions()
-                    .position(latLng)
-                    .title(getString(R.string.dropped_pin))
-                    .snippet(snippet)
-            )
-        }*/
 
         //set location data
             map.setOnMapLongClickListener {
@@ -192,7 +179,7 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
     private fun isPermissionGranted() : Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
+            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun enableMyLocation() {

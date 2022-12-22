@@ -128,7 +128,7 @@ class SaveReminderFragment : BaseFragment() {
             }
             else -> REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
         }
-        //Log.d(TAG, "Request foreground only location permission")
+
         ActivityCompat.requestPermissions(
             requireContext() as Activity,
             permissionsArray,
@@ -140,7 +140,7 @@ class SaveReminderFragment : BaseFragment() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        //Log.d(TAG, "onRequestPermissionResult")
+
 
         if (
             grantResults.isEmpty() ||
@@ -211,7 +211,7 @@ class SaveReminderFragment : BaseFragment() {
             .setCircularRegion(
                 currentGeofenceData.latitude!!,
                 currentGeofenceData.longitude!!,
-                100f
+                100F
             )
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
