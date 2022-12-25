@@ -9,6 +9,7 @@ import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -52,6 +53,7 @@ class RemindersListViewModelTest {
         stopKoin()
     }
 
+    val list2_null_value = ReminderDTO("friend house", "say hello to friend", "tanta", null,null)
 
     @Test
     fun loadReminders_whenShowLoadingIsTure(){
@@ -64,19 +66,37 @@ class RemindersListViewModelTest {
     @Test
     fun loadReminders_whenShowNoDataIsFalse(){
         //val item = ReminderDTO("Computer Mall", "ask for labtop price", "tanta", 30.23549 , 30.6548)
-        //When
         remiderViewModel.showNoData.value = false
-        //Then
         assertEquals(remiderViewModel.showNoData.getOrAwaitValue(), false)
     }
     @Test
 
     fun loadReminders_whenShowNoDataIstrue(){
 
-        //When
         remiderViewModel.showNoData.value = true
-        //Then
         assertEquals(remiderViewModel.showNoData.getOrAwaitValue(), true)
+    }
+
+    @Test
+    fun loadReminders_remainderList_NotEmpty() = mainCoroutineRule.runBlockingTest  {
+        val list1 = ReminderDTO("Computer Mall", "ask for labtop price", "tanta", 30.23549 , 30.6548)
+
+        remiderRepository.saveReminder(list1)
+        remiderViewModel.loadReminders()
+        assertThat(remiderViewModel.remindersList.getOrAwaitValue()).isNotEmpty()
+    }
+
+
+    @Test
+    fun loadReminders_reminderList_empty(){
+
+        remiderRepository.whenError = true
+        mainCoroutineRule.pauseDispatcher()
+
+        remiderViewModel.loadReminders()
+        mainCoroutineRule.resumeDispatcher()
+
+        assertThat(remiderViewModel.showSnackBar.getOrAwaitValue()).isEqualTo("Reminder Error")
     }
 
 }
