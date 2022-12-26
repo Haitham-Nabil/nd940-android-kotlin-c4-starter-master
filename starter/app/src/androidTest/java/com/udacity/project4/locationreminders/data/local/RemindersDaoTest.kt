@@ -23,7 +23,6 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-//Unit test the DAO
 @SmallTest
 class RemindersDaoTest {
 
@@ -64,5 +63,22 @@ var instantExecutorRule = InstantTaskExecutorRule()
         assertThat(result.location, `is`(list1.location))
         assertThat(result.latitude, `is`(list1.latitude))
         assertThat(result.longitude, `is`(list1.longitude))
+    }
+
+    @Test
+    fun getallremiders() = runBlockingTest {
+        database.reminderDao().saveReminder(list1)
+        database.reminderDao().saveReminder(list2)
+        val result_all = database.reminderDao().getReminders()
+        assertThat(result_all, `is`(notNullValue()))
+    }
+
+    @Test
+    fun deleteallremiders() = runBlockingTest {
+        database.reminderDao().saveReminder(list1)
+        database.reminderDao().saveReminder(list2)
+        database.reminderDao().deleteAllReminders()
+        val result_deleted = database.reminderDao().getReminders()
+        assertThat(result_deleted, `is`(emptyList()))
     }
 }
