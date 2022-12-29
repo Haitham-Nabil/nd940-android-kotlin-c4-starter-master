@@ -7,6 +7,8 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -108,7 +110,9 @@ class RemindersActivityTest :
 
         Espresso.onView(withId(R.id.addReminderFAB)).perform(ViewActions.click())
         Espresso.onView(withId(R.id.saveReminder)).perform(ViewActions.click())
-
+        val snackBarMessage = appContext.getString(R.string.err_enter_title)
+        Espresso.onView(ViewMatchers.withText(snackBarMessage))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         activityScenario.close()
     }
     @Test
@@ -124,7 +128,9 @@ class RemindersActivityTest :
             .perform(ViewActions.typeText("my new Description"))
         Espresso.closeSoftKeyboard()
         Espresso.onView(withId(R.id.saveReminder)).perform(ViewActions.click())
-
+        val snackBarMessage = appContext.getString(R.string.err_select_location)
+        Espresso.onView(ViewMatchers.withText(snackBarMessage))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         activityScenario.close()
     }
 

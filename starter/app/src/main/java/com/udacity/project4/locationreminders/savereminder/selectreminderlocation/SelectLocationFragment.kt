@@ -12,7 +12,9 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -124,7 +126,12 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
         setPoiClick(map)
         setMapStyle(map)
         //enableMyLocation()
-        getUserLocation()
+        if(isPermissionGranted()){
+            getUserLocation()
+        }else{
+            requestLocationPermission()
+        }
+
     }
 
 
@@ -220,6 +227,8 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.size > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 enableMyLocation()
+            }else{
+                Toast.makeText(requireContext(), "Error getting location you cant get you location", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -243,4 +252,18 @@ class SelectLocationFragment : BaseFragment(),OnMapReadyCallback {
             }
     }
 
+    private fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED) {
+            map.isMyLocationEnabled = true
+        }
+        else {
+            this.requestPermissions(
+                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+        }
+    }
 }
